@@ -5,8 +5,8 @@ require "json"
 module OrenoLxdapi
   class Client
 
-    def initialize(image_name, container_name)
-      @uri = "unix:///var/lib/lxd/unix.socket"
+    def initialize(uri, image_name, container_name)
+      @uri = uri
       @image_name = image_name
       @container_name = container_name
     end
