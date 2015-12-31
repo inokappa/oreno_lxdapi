@@ -35,11 +35,11 @@ module OrenoLxdapi
       req["Content-Type"] = "application/json"
       payload = {
         "name" => @container_name,
-        "architecture" => opts[:architecture].to_i,
-        "profiles" =>  opts[:profiles],
-        "ephemeral" => opts[:ephemeral],
+        "architecture" => options[:architecture].to_i,
+        "profiles" =>  options[:profiles],
+        "ephemeral" => options[:ephemeral],
         "config" => {
-          "limits.cpu" => opts[:limits_cpu]
+          "limits.cpu" => options[:limits_cpu]
         },
         "source" =>  {
           "type" => "image",
