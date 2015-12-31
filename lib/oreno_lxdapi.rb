@@ -21,16 +21,25 @@ module OrenoLxdapi
       return resp.body
     end
     
-    def create_container
+    def create_container(opts={})
+      options = {
+        :architecture => 2,
+        :profiles => ["default"],
+        :ephemeral => true,
+        :limits_cpu => "1",
+      }
+
+      options.merge!(opts)
+
       req = Net::HTTP::Post.new("/1.0/containers")
       req["Content-Type"] = "application/json"
       payload = {
         "name" => @container_name,
-        "architecture" => 2,
-        "profiles" =>  ["default"],
-        "ephemeral" => true,
+        "architecture" => opts[:architecture].to_i,
+        "profiles" =>  opts[:profiles],
+        "ephemeral" => opts[:ephemeral],
         "config" => {
-          "limits.cpu" => "1"
+          "limits.cpu" => opts[:limits_cpu]
         },
         "source" =>  {
           "type" => "image",
@@ -38,7 +47,7 @@ module OrenoLxdapi
         }
       }
       req.body = payload.to_json
-     
+
       resp = client.request(req)
       return resp.body
     end
@@ -66,43 +75,41 @@ module OrenoLxdapi
       end
     
     end
-    
-    def run_container
+
+    def state_container(action, opts={})
+      options = {
+        :timeout => 30,
+        :force => true
+      }
+
+      options.merge!(opts)
+
       req = Net::HTTP::Put.new("/1.0/containers/#{@container_name}/state")
       req["Content-Type"] = "application/json"
       payload = {
-        "action" => "start",
-        "timeout" => 30,
-        "force" => true
+        "action" => action,
+        "timeout" => options[:timeout],
+        "force" => options[:force]
       }
       req.body = payload.to_json
       resp = client.request(req)
 
-      loop do
-        puts "still starting..."
-        status = check_container_status
-        if status.length == 2 && status[1] != ""
-          break
+      if action == "start"
+        loop do
+          puts "still starting..."
+          status = check_container_status
+          if status.length == 2 && status[1] != ""
+            break
+          end
+
+          sleep 3
         end
+        return resp.body
+      else
+        puts "stop container..."
+        return resp.body
+      end 
 
-        sleep 3
-      end
-    
-      return resp.body
-    end
-    
-    def stop_container
-      req = Net::HTTP::Put.new("/1.0/containers/#{@container_name}/state")
-      req["Content-Type"] = "application/json"
-      payload = {
-        "action" => "stop",
-        "timeout" => 30,
-        "force" => true
-      }
-      req.body = payload.to_json
-     
-      resp = client.request(req)
-      return resp.body
     end
 
     def create_exec(command)
