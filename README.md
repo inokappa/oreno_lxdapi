@@ -1,9 +1,16 @@
 # Oreno LXD API Client for Ruby
 [![Build Status](https://travis-ci.org/inokappa/oreno_lxdapi.svg)](https://travis-ci.org/inokappa/oreno_lxdapi)
 
+LXD API Client for Ruby.
+
 ## Reference
 
 - [LXD REST API](https://github.com/lxc/lxd/blob/master/specs/rest-api.md)
+
+## Requirements
+
+- [LXD](https://linuxcontainers.org/)
+- [puppetlabs/net_http_unix](https://github.com/puppetlabs/net_http_unix)
 
 ## Installation
 
