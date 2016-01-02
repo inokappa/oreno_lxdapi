@@ -22,6 +22,9 @@ module OrenoLxdapi
       resp = client.request(req)
       return resp.body
     end
+
+    def config_container(opts={})
+    end
     
     def create_container(opts={})
       options = {
