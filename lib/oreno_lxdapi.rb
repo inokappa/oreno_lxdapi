@@ -1,11 +1,13 @@
 require "oreno_lxdapi/version"
 require "net_http_unix"
 require "json"
+require "logger"
 
 module OrenoLxdapi
   class Client
 
     def initialize(uri, image_name, container_name)
+      @log = Logger.new(STDOUT)
       @uri = uri
       @image_name = image_name
       @container_name = container_name
@@ -51,11 +53,25 @@ module OrenoLxdapi
       resp = client.request(req)
       return resp.body
     end
+
+    def delete_container
+      @log.info("Deleting Container...")
+      req = Net::HTTP::Delete.new("/1.0/containers/#{@container_name}")
+      resp = client.request(req)
+      return resp.body
+    end
     
     def describe_container
       req = Net::HTTP::Get.new("/1.0/containers/#{@container_name}")
       resp = client.request(req)
-      return resp.body
+      json = JSON.parse(resp.body)
+
+      if json['metadata']
+        return json['metadata']
+      else
+        @log.warn("Failed to get metadata.")
+      end
+
     end
     
     def check_container_status
@@ -63,6 +79,7 @@ module OrenoLxdapi
       resp = client.request(req)
       json = JSON.parse(resp.body)
 
+      status = ""
       ipv4 = ""
       if json['metadata']
         status = json['metadata']['status']
@@ -96,7 +113,7 @@ module OrenoLxdapi
 
       if action == "start"
         loop do
-          puts "still starting..."
+          @log.info("Starting Container...")
           status = check_container_status
           if status.length == 2 && status[1] != ""
             break
@@ -105,44 +122,12 @@ module OrenoLxdapi
           sleep 3
         end
         return resp.body
-      else
-        puts "stop container..."
+      elsif action == "stop"
+        @log.info("Stopping Container...")
         return resp.body
+      else
+        @log.warn("Invalid argument.")
       end 
-
-    end
-
-    def create_exec(command)
-      commands = command.split(" ")
-      req = Net::HTTP::Post.new("/1.0/containers/#{@container_name}/exec")
-      req["Content-Type"] = "application/json"
-      payload = {
-        "command" =>  commands,
-        "environment" => {
-          "HOME" => "/root",
-          "TERM" => "screen",
-          "USER" => "root",
-        },
-        "wait-for-websocket" => true,
-        "interactive" => true,
-      }
-      req.body = payload.to_json
-     
-      resp = client.request(req)
-      json = JSON.parse(resp.body)
-
-      operation_id = ""
-      secret = ""
-
-      if json['metadata']
-        operation_id = json['metadata']['id']
-        unless json['metadata']['metadata'] == nil
-          secret = json['metadata']['metadata']['fds']['0']
-          return operation_id, secret
-        else
-          return operation_id
-        end
-      end
 
     end
 
@@ -163,6 +148,40 @@ module OrenoLxdapi
       return resp.body
     end
 
+    def create_exec(command)
+    #  commands = command.split(" ")
+    #  req = Net::HTTP::Post.new("/1.0/containers/#{@container_name}/exec")
+    #  req["Content-Type"] = "application/json"
+    #  payload = {
+    #    "command" =>  commands,
+    #    "environment" => {
+    #      "HOME" => "/root",
+    #      "TERM" => "screen",
+    #      "USER" => "root",
+    #    },
+    #    "wait-for-websocket" => true,
+    #    "interactive" => true,
+    #  }
+    #  req.body = payload.to_json
+    # 
+    #  resp = client.request(req)
+    #  json = JSON.parse(resp.body)
+
+    #  operation_id = ""
+    #  secret = ""
+
+    #  if json['metadata']
+    #    operation_id = json['metadata']['id']
+    #    unless json['metadata']['metadata'] == nil
+    #      secret = json['metadata']['metadata']['fds']['0']
+    #      return operation_id, secret
+    #    else
+    #      return operation_id
+    #    end
+    #  end
+
+    end
+
     def run_exec(operation_id, secret)
       # run_lxc_exec
     end
@@ -174,11 +193,11 @@ module OrenoLxdapi
       return status
     end
 
-    def wait_operation(operation_id)
-      req = Net::HTTP::Get.new("/1.0/operations/#{operation_id}/wait")
-      resp = client.request(req)
-      return resp.body
-    end
+    #def wait_operation(operation_id)
+    #  req = Net::HTTP::Get.new("/1.0/operations/#{operation_id}/wait")
+    #  resp = client.request(req)
+    #  return resp.body
+    #end
 
   end
 end
