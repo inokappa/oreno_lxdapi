@@ -1,4 +1,4 @@
-# OrenoLxdapi::Client
+# Oreno LXD API Client for Ruby
 [![Build Status](https://travis-ci.org/inokappa/oreno_lxdapi.svg)](https://travis-ci.org/inokappa/oreno_lxdapi)
 
 ## Installation
