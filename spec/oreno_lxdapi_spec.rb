@@ -4,7 +4,7 @@ require 'oreno_lxdapi'
 describe OrenoLxdapi do
   before do
     # @container = OrenoLxdapi::Client.new('unix:///var/lib/lxd/unix.socket', 'oreno-ubuntu-image', 'test01')
-    @container = OrenoLxdapi::Client.new('/path/to/uri', 'oreno-ubuntu-image', 'test01')
+    @container = OrenoLxdapi::Client.new('/path/to/uri', 'test-image01', 'test01')
   end
 
   it 'Has a version number' do
