@@ -1,4 +1,5 @@
 # OrenoLxdapi::Client
+[![Build Status](https://travis-ci.org/inokappa/oreno_lxdapi.svg)](https://travis-ci.org/inokappa/oreno_lxdapi)
 
 ## Installation
 
