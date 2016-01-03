@@ -9,9 +9,9 @@ Gem::Specification.new do |spec|
   spec.authors       = ["inokappa"]
   spec.email         = ["inokara at gmail.com"]
 
-  spec.summary       = %q{oreno}
-  spec.description   = %q{lxdapi}
-  spec.homepage      = ""
+  spec.summary       = %q{LXD API Client for Ruby.}
+  spec.description   = %q{LXD API Client for Ruby.}
+  spec.homepage      = "https://github.com/inokappa/oreno_lxdapi"
 
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
