@@ -3,8 +3,10 @@ require 'oreno_lxdapi'
 
 describe OrenoLxdapi do
   before do
-    # @container = OrenoLxdapi::Client.new('unix:///var/lib/lxd/unix.socket', 'oreno-ubuntu-image', 'test01')
-    @container = OrenoLxdapi::Client.new('/path/to/uri', 'test-image01', 'test01')
+    # @container = OrenoLxdapi::Client.new('unix:///var/lib/lxd/unix.socket',
+    #                                      'oreno-ubuntu-image', 'test01')
+    @container = OrenoLxdapi::Client.new('/path/to/uri',
+                                         'test-image01', 'test01')
   end
 
   it 'Has a version number' do
@@ -26,14 +28,26 @@ describe OrenoLxdapi do
   end
 
   it 'Create container(#create_container)' do
-    res = '{"type":"async","status":"OK","status_code":100,"metadata":{"id":"xxxxx-xxxxx-xxxxx-xxxxx","class":"task","created_at":"2016-01-02T12:38:17.743488578+09:00","updated_at":"2016-01-02T12:38:17.743488578+09:00","status":"Running","status_code":103,"resources":{"containers":["/1.0/containers/test01"]},"metadata":null,"may_cancel":false,"err":""},"operation":"/1.0/operations/xxxxx-xxxxx-xxxxx-xxxxx"}'
+    res = '{"type":"async","status":"OK","status_code":100,"metadata":'\
+          '{"id":"xxxxx-xxxxx-xxxxx-xxxxx","class":"task","created_at":'\
+          '"2016-01-02T12:38:17.743488578+09:00","updated_at":'\
+          '"2016-01-02T12:38:17.743488578+09:00","status":"Running",'\
+          '"status_code":103,"resources":{"containers":'\
+          '["/1.0/containers/test01"]},"metadata":null,"may_cancel":false,'\
+          '"err":""},"operation":"/1.0/operations/xxxxx-xxxxx-xxxxx-xxxxx"}'
     allow(@container).to receive(:create_container).and_return(res)
     response = @container.create_container
     expect(response).to eq res
   end
 
   it 'Delete container(#delete_container)' do
-    res = '{"type":"async","status":"OK","status_code":100,"metadata":{"id":"xxxxx-xxxxx-xxxxx-xxxxx","class":"task","created_at":"2016-01-02T12:38:17.743488578+09:00","updated_at":"2016-01-02T12:38:17.743488578+09:00","status":"Running","status_code":103,"resources":{"containers":["/1.0/containers/test01"]},"metadata":null,"may_cancel":false,"err":""},"operation":"/1.0/operations/xxxxx-xxxxx-xxxxx-xxxxx"}'
+    res = '{"type":"async","status":"OK","status_code":100,"metadata":'\
+          '{"id":"xxxxx-xxxxx-xxxxx-xxxxx","class":"task","created_at":'\
+          '"2016-01-02T12:38:17.743488578+09:00","updated_at":'\
+          '"2016-01-02T12:38:17.743488578+09:00","status":"Running",'\
+          '"status_code":103,"resources":{"containers":'\
+          '["/1.0/containers/test01"]},"metadata":null,"may_cancel":false,'\
+          '"err":""},"operation":"/1.0/operations/xxxxx-xxxxx-xxxxx-xxxxx"}'
     allow(@container).to receive(:delete_container).and_return(res)
     response = @container.delete_container
     expect(response).to eq res
@@ -54,24 +68,37 @@ describe OrenoLxdapi do
   end
 
   it 'Start container(#state_container)' do
-    res = '{"type":"async","status":"OK","status_code":100,"metadata":{"id":"xxxxx-xxxxx-xxxxx-xxxxx","class":"task","created_at":"2016-01-02T16:21:59.523150482+09:00","updated_at":"2016-01-02T16:21:59.523150482+09:00","status":"Running","status_code":103,"resources":{"containers":["/1.0/containers/test01"]},"metadata":null,"may_cancel":false,"err":""},"operation":"/1.0/operations/xxxxx-xxxxx-xxxxx-xxxxx"}'
-    allow(@container).to receive(:state_container).with("start").and_return(res)
-    response = @container.state_container("start")
+    res = '{"type":"async","status":"OK","status_code":100,"metadata":'\
+          '{"id":"xxxxx-xxxxx-xxxxx-xxxxx","class":"task","created_at":'\
+          '"2016-01-02T16:21:59.523150482+09:00","updated_at":'\
+          '"2016-01-02T16:21:59.523150482+09:00","status":"Running",'\
+          '"status_code":103,"resources":{"containers":'\
+          '["/1.0/containers/test01"]},"metadata":null,"may_cancel":false,'\
+          '"err":""},"operation":"/1.0/operations/xxxxx-xxxxx-xxxxx-xxxxx"}'
+    allow(@container).to receive(:state_container).with('start').and_return(res)
+    response = @container.state_container('start')
     expect(response).to eq res
   end
 
   it 'Stop container(#state_container)' do
-    res = '{"type":"async","status":"OK","status_code":100,"metadata":{"id":"xxxxx-xxxxx-xxxxx-xxxxx","class":"task","created_at":"2016-01-02T16:22:02.897838648+09:00","updated_at":"2016-01-02T16:22:02.897838648+09:00","status":"Running","status_code":103,"resources":{"containers":["/1.0/containers/test01"]},"metadata":null,"may_cancel":false,"err":""},"operation":"/1.0/operations/xxxxx-xxxxx-xxxxx-xxxxx"}'
-    allow(@container).to receive(:state_container).with("stop").and_return(res)
-    response = @container.state_container("stop")
+    res = '{"type":"async","status":"OK","status_code":100,"metadata":'\
+          '{"id":"xxxxx-xxxxx-xxxxx-xxxxx","class":"task","created_at":'\
+          '"2016-01-02T16:22:02.897838648+09:00","updated_at":'\
+          '"2016-01-02T16:22:02.897838648+09:00","status":"Running",'\
+          '"status_code":103,"resources":{"containers":'\
+          '["/1.0/containers/test01"]},"metadata":null,"may_cancel":false,'\
+          '"err":""},"operation":"/1.0/operations/xxxxx-xxxxx-xxxxx-xxxxx"}'
+    allow(@container).to receive(:state_container).with('stop').and_return(res)
+    response = @container.state_container('stop')
     expect(response).to eq res
   end
 
   it 'File upload(#file_upload)' do
-    res = '{"type":"sync","status":"Success","status_code":200,"metadata":{},"operation":""}'
-    allow(@container).to receive(:file_upload).with("src", "dst").and_return(res)
-    response = @container.file_upload("src", "dst")
+    res = '{"type":"sync","status":"Success","status_code":200,"metadata":'\
+          '{},"operation":""}'
+    allow(@container).to \
+      receive(:file_upload).with('src', 'dst').and_return(res)
+    response = @container.file_upload('src', 'dst')
     expect(response).to eq res
   end
-
 end
