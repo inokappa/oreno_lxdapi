@@ -3,6 +3,7 @@ require 'rspec/core/rake_task'
 require 'rubocop/rake_task'
 
 if defined?(RSpec)
+  task default: :spec
   task spec: 'spec:all'
   namespace :spec do
     task all: ['spec:core',
