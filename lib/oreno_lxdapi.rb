@@ -27,8 +27,7 @@ module OrenoLxdapi
       resp.body
     end
 
-    def config_container(opts = {})
-    end
+    def config_container(opts = {}) end
 
     def create_container(opts = {})
       options = {
@@ -73,11 +72,8 @@ module OrenoLxdapi
       resp = client.request(req)
       json = JSON.parse(resp.body)
 
-      if json['metadata']
-        return json['metadata']
-      else
-        @log.warn('Failed to get metadata.')
-      end
+      return json['metadata'] if json['metadata']
+      @log.warn('Failed to get metadata.')
     end
 
     def check_container_status
@@ -87,16 +83,10 @@ module OrenoLxdapi
 
       status = ''
       ipv4 = ''
-      if json['metadata']
-        status = json['metadata']['status']
-        if !json['metadata']['ips'].nil?
-          json['metadata']['ips'].each\
-            { |ip| ipv4 = ip['address'] if ip['interface'] == 'eth0' }
-          return status, ipv4
-        else
-          return status
-        end
-      end
+      status = json['metadata']['status'] if json['metadata']
+      return status if json['metadata']['ips'].nil
+      json['metadata']['ips'].each\
+        { |ip| ipv4 = ip['address'] if ip['interface'] == 'eth0' }
     end
 
     def state_container(action, opts = {})
@@ -195,10 +185,10 @@ module OrenoLxdapi
       status
     end
 
-    #def wait_operation(operation_id)
+    # def wait_operation(operation_id)
     #  req = Net::HTTP::Get.new("/1.0/operations/#{operation_id}/wait")
     #  resp = client.request(req)
     #  return resp.body
-    #end
+    # end
   end
 end
